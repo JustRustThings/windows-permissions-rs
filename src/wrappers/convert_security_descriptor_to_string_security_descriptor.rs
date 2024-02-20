@@ -55,7 +55,7 @@ pub fn ConvertSecurityDescriptorToStringSecurityDescriptor(
 
     let string = utilities::os_from_buf(slice);
 
-    unsafe { windows_sys::Win32::System::Memory::LocalFree(buf_ptr as *mut _ as isize) };
+    unsafe { windows_sys::Win32::Foundation::LocalFree(buf_ptr.cast()) };
 
     Ok(string)
 }

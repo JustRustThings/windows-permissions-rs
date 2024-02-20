@@ -35,7 +35,7 @@ pub fn ConvertSidToStringSid(sid: &Sid) -> io::Result<OsString> {
 
         let os_string = utilities::os_from_buf(slice_with_nul);
 
-        unsafe { windows_sys::Win32::System::Memory::LocalFree(buf_ptr as isize) };
+        unsafe { windows_sys::Win32::Foundation::LocalFree(buf_ptr.cast()) };
 
         Ok(os_string)
     }

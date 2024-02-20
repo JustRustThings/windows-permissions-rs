@@ -1,6 +1,7 @@
 //! A specialized [`Box`] variation for items stored on the local heap.
 
-use windows_sys::Win32::System::Memory::{LocalAlloc, LocalFree};
+use windows_sys::Win32::Foundation::LocalFree;
+use windows_sys::Win32::System::Memory::LocalAlloc;
 
 use crate::constants::LocalAllocFlags;
 use std::borrow::{Borrow, BorrowMut};
@@ -120,8 +121,8 @@ impl<T> LocalBox<T> {
 
 impl<T> Drop for LocalBox<T> {
     fn drop(&mut self) {
-        let result = unsafe { LocalFree(self.as_ptr() as *mut _ as isize) };
-        debug_assert_eq!(result, 0);
+        let result = unsafe { LocalFree(self.as_ptr().cast()) };
+        debug_assert_eq!(result, std::ptr::null_mut());
     }
 }
 
