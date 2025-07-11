@@ -32,15 +32,13 @@ macro_rules! get_security_descriptor_acl {
                 if present == 0 {
                     // Not present
                     Ok(None)
+                } else if acl_ptr.is_null() {
+                    // Present but null: this indicates full permissions.
+                    // We return it as if not present for now, this is good
+                    // enough for our usecases...
+                    Ok(None)
                 } else {
-                    // Present
-                    let acl = unsafe {
-                        if acl_ptr.is_null() {
-                            panic!("$f indicated success but returned NULL");
-                        } else {
-                            &*(acl_ptr as *const _)
-                        }
-                    };
+                    let acl = unsafe { &*(acl_ptr as *const _) };
 
                     debug_assert!(wrappers::IsValidAcl(acl));
 
